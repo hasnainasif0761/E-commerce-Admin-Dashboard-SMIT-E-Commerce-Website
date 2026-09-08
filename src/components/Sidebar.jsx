@@ -8,27 +8,29 @@ import {
   PieChart, 
   ClipboardList 
 } from 'lucide-react';
+import { Link } from 'react-router-dom';
 
 const Sidebar = ({ isCollapsed, activeTab, setActiveTab }) => {
   const menuSections = [
-    {
-      title: 'Dashboard',
-      items: [
-        { id: 'default', label: 'Dashboard', icon: Gauge },
-        { id: 'analytics', label: 'Analytics', icon: Tv },
-        { id: 'invoice', label: 'Invoice', icon: FileText },
-        { id: 'crm', label: 'CRM', icon: LifeBuoy },
-        { id: 'blog', label: 'Blog', icon: Newspaper },
-      ]
-    },
-    {
-      title: 'Widget',
-      items: [
-        { id: 'statistics', label: 'Statistics', icon: PieChart },
-        { id: 'data', label: 'Data', icon: ClipboardList },
-      ]
-    }
-  ];
+  {
+    title: 'Dashboard',
+    items: [
+      { id: 'default', label: 'Dashboard', icon: Gauge, path: '/' },
+      { id: 'analytics', label: 'Analytics', icon: Tv, path: '/analytics' },
+      { id: 'invoice', label: 'Invoice', icon: FileText, path: '/invoice' },
+      { id: 'crm', label: 'CRM', icon: LifeBuoy, path: '/crm' },
+      { id: 'blog', label: 'Blog', icon: Newspaper, path: '/blog' },
+    ]
+  },
+  {
+    title: 'Widget',
+    items: [
+      { id: 'statistics', label: 'Statistics', icon: PieChart, path: '/statistics' },
+      { id: 'data', label: 'Data', icon: ClipboardList, path: '/data' },
+    ]
+  }
+];
+
 
   return (
     <aside 
@@ -53,7 +55,8 @@ const Sidebar = ({ isCollapsed, activeTab, setActiveTab }) => {
                 const isActive = activeTab === item.id;
 
                 return (
-                  <button
+                  <Link
+                    to={item.path}
                     key={item.id}
                     onClick={() => setActiveTab(item.id)}
                     title={isCollapsed ? item.label : ''}
@@ -74,7 +77,7 @@ const Sidebar = ({ isCollapsed, activeTab, setActiveTab }) => {
                         {item.label}
                       </span>
                     )}
-                  </button>
+                  </Link>
                 );
               })}
             </div>
