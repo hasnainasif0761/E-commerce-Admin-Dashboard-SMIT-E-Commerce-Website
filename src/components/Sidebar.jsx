@@ -6,7 +6,8 @@ import {
   LifeBuoy, 
   Newspaper, 
   PieChart, 
-  ClipboardList 
+  ClipboardList, 
+  User,
 } from 'lucide-react';
 import { Link } from 'react-router-dom';
 
@@ -16,8 +17,8 @@ const Sidebar = ({ isCollapsed, activeTab, setActiveTab }) => {
     title: 'Dashboard',
     items: [
       { id: 'default', label: 'Dashboard', icon: Gauge, path: '/' },
-      { id: 'analytics', label: 'Analytics', icon: Tv, path: '/analytics' },
-      { id: 'invoice', label: 'Invoice', icon: FileText, path: '/invoice' },
+      { id: 'analytics', label: 'Create User', icon: User, path: '/CreateUser' },
+      { id: 'invoice', label: 'View Employee', icon: FileText, path: '/viewUser' },
       { id: 'crm', label: 'CRM', icon: LifeBuoy, path: '/crm' },
       { id: 'blog', label: 'Blog', icon: Newspaper, path: '/blog' },
     ]
