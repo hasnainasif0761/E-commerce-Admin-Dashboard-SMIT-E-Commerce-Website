@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { Camera, Upload, Home, ChevronRight, ChevronDown } from 'lucide-react';
+import toast from 'react-hot-toast';
 
 function CreateUser({isCollapsed}) {
     const [formData, setFormData] = useState({
@@ -14,11 +15,68 @@ function CreateUser({isCollapsed}) {
     city: '',
     country: '',
     notes: '',
+    LiveImageurl:'',
+    image:null
   });
       const handleChange = (e) => {
     const { name, value } = e.target;
     setFormData((prev) => ({ ...prev, [name]: value }));
   };
+
+  const handleSubmit = async(e) =>{
+      e.preventDefault();
+
+  const data = new FormData();
+
+  data.append("firstName", formData.firstName);
+  data.append("lastName", formData.lastName);
+  data.append("username", formData.username);
+  data.append("email", formData.email);
+  data.append("countryCode", formData.countryCode);
+  data.append("contact", formData.contact);
+  data.append("address", formData.address);
+  data.append("pinCode", formData.pinCode);
+  data.append("city", formData.city);
+  data.append("country", formData.country);
+  data.append("notes", formData.notes);
+  if (formData.image) {
+    data.append("image", formData.image);
+  }
+
+  const response = await fetch("http://localhost:4000/form/create-user", {
+    method: "POST",
+    body: data,
+  });
+
+const text = await response.text();
+
+console.log("Backend response:", text);
+
+if (!response.ok) {
+  throw new Error(text);
+}
+
+const result = JSON.parse(text);
+console.log(result);
+  setFormData({
+    firstName: '',
+    lastName: '',
+    username: '',
+    email: '',
+    countryCode: 'US',
+    contact: '',
+    address: '',
+    pinCode: '',
+    city: '',
+    country: '',
+    notes: '',
+    LiveImageurl:'',
+    image: null
+  });
+  toast.success("User created Successfully...",{position:'top-right',duration:4000})
+  }
+
+
   return (
     <div className={`${isCollapsed ? 'ml-[80px] w-[calc(100%-80px)]' : 'ml-[260px] w-[calc(100%-260px)]'} `}>
         <div className='w-full h-20 '>
@@ -35,27 +93,61 @@ function CreateUser({isCollapsed}) {
             <span className="text-purple-400">Create</span>
           </div>
         </div>
-
+        <form onSubmit={handleSubmit} method='post'>
         {/* Form Container */}
         <div className="bg-[#1a213d] border border-slate-800 rounded-lg p-6 max-w-6xl mx-auto shadow-xl">
           {/* Section Title */}
           <h2 className="text-lg font-semibold text-white mb-6">New Customer</h2>
 
           {/* Profile Picture Upload Section */}
-          <div className="flex items-center justify-between bg-[#131930]/40 p-4 rounded-lg border border-slate-800/60 mb-8">
-            <div className="flex items-center space-x-4">
+          <div className="flex items-center flex-col justify-between bg-[#131930]/40 p-4 rounded-lg border border-slate-800/60 mb-8">
+            <div className='flex justify-between w-full'>
+            <div className="flex items-center space-x-4 ">
               <div className="w-14 h-14 rounded-full bg-[#252e4d] flex items-center justify-center text-slate-400 border border-slate-700">
-                <Camera size={24} />
+                {!formData.image && (<Camera size={24} />)}
+                {formData.image && (
+                <img
+                  src={URL.createObjectURL(formData.image)}
+                  alt="Preview"
+                  className="w-14 h-14 rounded-full object-cover"
+                />
+              )}
               </div>
               <div>
                 <h3 className="text-sm font-semibold text-white">Personal Information</h3>
-                <p className="text-xs text-blue-400 mt-0.5">Add a profile picture (optional)</p>
+                <p className="text-xs text-blue-400 mt-0.5">Ya Jo Image ha Wo Multer ka zarya send hu ge uploads folder ko</p>
               </div>
             </div>
-            <button className="flex items-center space-x-2 bg-[#233058] hover:bg-[#2c3d70] text-blue-400 text-xs font-medium px-4 py-2.5 rounded-md border border-blue-500/30 transition-colors">
-              <Upload size={14} />
-              <span>Upload Picture</span>
-            </button>
+            <label className="flex items-center space-x-2 bg-[#233058] hover:bg-[#2c3d70] text-blue-400 text-xs font-medium px-4 py-2.5 rounded-md border border-blue-500/30 transition-colors cursor-pointer">
+            <Upload size={14} />
+            <span>Upload Picture</span>
+
+            <input
+              type="file"
+              accept="image/*"
+              hidden
+              onChange={(e) =>
+                setFormData((prev) => ({
+                  ...prev,
+                  image: e.target.files[0]
+                }))
+              }
+            />
+          </label>
+          </div>
+          <div className='w-full mt-7'>
+              <label className="block text-xs ml-1 text-slate-300 mb-1.5 font-medium">
+                  Live Image Url <span className="text-red-500">*</span>
+                </label>
+                <input
+                  type="text"
+                  name="firstName"
+                  value={formData.LiveImageurl}
+                  onChange={handleChange}
+                  placeholder="Enter Live Image Url"
+                  className="w-full bg-[#131930] border border-slate-700/70 rounded-md px-3.5 py-2.5 text-sm text-white placeholder-slate-500 focus:outline-none focus:border-blue-500 transition-colors"
+                />
+                </div>
           </div>
 
           {/* Personal Information Section */}
@@ -263,12 +355,13 @@ function CreateUser({isCollapsed}) {
             </button>
             <button
               type="submit"
-              className="bg-[#2a365c] hover:bg-[#344475] text-slate-300 hover:text-white text-sm font-medium px-5 py-2 rounded-md border border-slate-600/40 transition-colors"
+              className="bg-[#2a365c] cursor-pointer hover:bg-[#344475] text-slate-300 hover:text-white text-sm font-medium px-5 py-2 rounded-md border border-slate-600/40 transition-colors"
             >
               Add
             </button>
           </div>
         </div>
+      </form>
       </div>
 
       {/* Footer */}

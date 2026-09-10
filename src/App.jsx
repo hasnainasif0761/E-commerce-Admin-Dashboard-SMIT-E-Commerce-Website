@@ -5,6 +5,7 @@ import Header from './components/Header'
 import Sidebar from './components/Sidebar'
 import CreateUser from './pages/CreateUser';
 import UserList from './pages/UserList';
+import { Toaster } from 'react-hot-toast';
 
 
 function App() {
@@ -15,6 +16,7 @@ function App() {
         }
   return (
     <div>
+      <Toaster/>
      <BrowserRouter>
       <Header toggleSidebar={toggleSidebar}/>
       <div className='flex border'>
