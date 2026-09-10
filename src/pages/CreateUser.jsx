@@ -39,6 +39,7 @@ function CreateUser({isCollapsed}) {
   data.append("city", formData.city);
   data.append("country", formData.country);
   data.append("notes", formData.notes);
+  data.append("LiveImageurl", formData.LiveImageurl);
   if (formData.image) {
     data.append("image", formData.image);
   }
@@ -114,8 +115,8 @@ console.log(result);
               )}
               </div>
               <div>
-                <h3 className="text-sm font-semibold text-white">Personal Information</h3>
-                <p className="text-xs text-blue-400 mt-0.5">Ya Jo Image ha Wo Multer ka zarya send hu ge uploads folder ko</p>
+                <h3 className="text-sm font-semibold text-white">Ya Jo Image ha Wo Multer ka zarya send hu ge uploads folder ko</h3>
+                <a href="https://github.com/huz07610761-ops/SMIT-Ecommerce-Website---Full-Stack-Backend/tree/main/uploads"><p className="text-[16px] text-red-400 mt-0.5">Check Multer Uploads Folder </p></a>
               </div>
             </div>
             <label className="flex items-center space-x-2 bg-[#233058] hover:bg-[#2c3d70] text-blue-400 text-xs font-medium px-4 py-2.5 rounded-md border border-blue-500/30 transition-colors cursor-pointer">
@@ -141,7 +142,7 @@ console.log(result);
                 </label>
                 <input
                   type="text"
-                  name="firstName"
+                  name="LiveImageurl"
                   value={formData.LiveImageurl}
                   onChange={handleChange}
                   placeholder="Enter Live Image Url"
