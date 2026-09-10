@@ -13,7 +13,7 @@ const UserList = ({ isCollapsed }) => {
   useEffect(() => {
     const fetchUsers = async () => {
       try {
-        const response = await fetch("http://localhost:4000/form/users");
+        const response = await fetch("https://smit-ecommerce-website-backend.vercel.app/form/users");
 
         const data = await response.json();
 
