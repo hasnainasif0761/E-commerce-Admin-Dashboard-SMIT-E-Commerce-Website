@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Search, Download, Plus, MoreVertical, ChevronLeft, ChevronRight, ChevronDown } from 'lucide-react';
+import { Search, Download, Plus, MoreVertical, ChevronLeft, ChevronRight, ChevronDown, Edit, Trash2 } from 'lucide-react';
 
 const UserList = ({ isCollapsed }) => {
   const [searchTerm, setSearchTerm] = useState('');
@@ -9,11 +9,14 @@ const UserList = ({ isCollapsed }) => {
   const [users, setUsers] = useState([]);
   const [loading, setLoading] = useState(true);
 
+  const [editUser, setEditUser] = useState(null);
+  const [showEditModal, setShowEditModal] = useState(false);
+
   // Fetch Users From Backend
   useEffect(() => {
     const fetchUsers = async () => {
       try {
-        const response = await fetch("https://smit-ecommerce-website-backend.vercel.app/form/users");
+        const response = await fetch("http://localhost:4000/form/users");
 
         const data = await response.json();
 
@@ -56,6 +59,39 @@ const UserList = ({ isCollapsed }) => {
     user.email.toLowerCase().includes(searchTerm.toLowerCase()) ||
     user.country.toLowerCase().includes(searchTerm.toLowerCase())
   );
+
+  // Delete User
+  const handleDeleteUser = async (id) => {
+  const confirmDelete = window.confirm(
+    "Are you sure you want to delete this user?"
+  );
+
+  if (!confirmDelete) return;
+
+  try {
+    const response = await fetch(
+      `http://localhost:4000/form/users/${id}`,
+      {
+        method: "DELETE",
+      }
+    );
+
+    const data = await response.json();
+
+    if (!response.ok) {
+      throw new Error(data.message || "Failed to delete user");
+    }
+
+    setUsers((prevUsers) =>
+      prevUsers.filter((user) => user._id !== id)
+    );
+
+    console.log(data.message);
+
+  } catch (error) {
+    console.log("Delete User Error:", error);
+  }
+};
 
   return (
     <div className={`transition-all duration-300 ${isCollapsed ? 'ml-[80px] mt-[80px] w-[calc(100%-80px)]' : 'ml-[260px] mt-[70px] w-[calc(100%-260px)]'}`}>
@@ -246,9 +282,28 @@ const UserList = ({ isCollapsed }) => {
                         {/* Action */}
                         <td className="py-3.5 px-3 text-center">
 
-                          <button className="text-slate-400 hover:text-white p-1 rounded transition-colors">
-                            <MoreVertical size={14} />
-                          </button>
+                          <div className="flex items-center justify-center gap-2">
+
+  <button
+    onClick={() => {
+      setEditUser(user);
+      setShowEditModal(true);
+    }}
+    className="flex items-center gap-1.5 bg-[#1e2a4a] hover:bg-[#25355e] text-blue-400 border border-blue-500/30 px-2.5 py-1.5 rounded-md text-[11px]"
+  >
+    <Edit size={13} />
+    Edit
+  </button>
+
+  <button
+    onClick={() => handleDeleteUser(user._id)}
+    className="flex items-center gap-1.5 bg-red-950/30 hover:bg-red-950/60 text-red-400 border border-red-500/20 px-2.5 py-1.5 rounded-md text-[11px]"
+  >
+    <Trash2 size={13} />
+    Delete
+  </button>
+
+</div>
 
                         </td>
 
@@ -352,7 +407,333 @@ const UserList = ({ isCollapsed }) => {
         </div>
 
       </div>
+                  {showEditModal && editUser && (
 
+  <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-sm p-4">
+
+    <div className="w-full max-w-2xl max-h-[90vh] overflow-y-auto bg-[#1a213d] border border-slate-700 rounded-lg shadow-2xl">
+
+      {/* Header */}
+      <div className="flex items-center justify-between px-6 py-4 border-b border-slate-800">
+
+        <div>
+          <h2 className="text-lg font-semibold text-white">
+            Edit User
+          </h2>
+
+          <p className="text-xs text-slate-400 mt-1">
+            Update customer information
+          </p>
+        </div>
+
+        <button
+          type="button"
+          onClick={() => {
+            setShowEditModal(false);
+            setEditUser(null);
+          }}
+          className="text-slate-400 hover:text-white text-xl"
+        >
+          ×
+        </button>
+
+      </div>
+
+
+      {/* Form */}
+      <form
+        onSubmit={async (e) => {
+          e.preventDefault();
+
+          try {
+
+            const response = await fetch(
+              `http://localhost:4000/form/users/${editUser._id}`,
+              {
+                method: "PUT",
+                headers: {
+                  "Content-Type": "application/json",
+                },
+                body: JSON.stringify(editUser),
+              }
+            );
+
+            const data = await response.json();
+
+            if (!response.ok) {
+              throw new Error(
+                data.message || "User update failed"
+              );
+            }
+
+            setUsers((prevUsers) =>
+              prevUsers.map((user) =>
+                user._id === editUser._id
+                  ? data.user
+                  : user
+              )
+            );
+
+            setShowEditModal(false);
+            setEditUser(null);
+
+          } catch (error) {
+
+            console.log("Update User Error:", error);
+
+          }
+        }}
+        className="p-6 space-y-5"
+      >
+
+        {/* First + Last Name */}
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+
+          <div>
+            <label className="block text-xs text-slate-300 mb-1.5">
+              First Name
+            </label>
+
+            <input
+              type="text"
+              value={editUser.firstName || ""}
+              onChange={(e) =>
+                setEditUser({
+                  ...editUser,
+                  firstName: e.target.value,
+                })
+              }
+              required
+              className="w-full bg-[#131930] border border-slate-700/70 rounded-md px-3.5 py-2.5 text-sm text-white focus:outline-none focus:border-blue-500"
+            />
+          </div>
+
+
+          <div>
+            <label className="block text-xs text-slate-300 mb-1.5">
+              Last Name
+            </label>
+
+            <input
+              type="text"
+              value={editUser.lastName || ""}
+              onChange={(e) =>
+                setEditUser({
+                  ...editUser,
+                  lastName: e.target.value,
+                })
+              }
+              className="w-full bg-[#131930] border border-slate-700/70 rounded-md px-3.5 py-2.5 text-sm text-white focus:outline-none focus:border-blue-500"
+            />
+          </div>
+
+        </div>
+
+
+        {/* Username + Email */}
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+
+          <div>
+            <label className="block text-xs text-slate-300 mb-1.5">
+              Username
+            </label>
+
+            <input
+              type="text"
+              value={editUser.username || ""}
+              onChange={(e) =>
+                setEditUser({
+                  ...editUser,
+                  username: e.target.value,
+                })
+              }
+              className="w-full bg-[#131930] border border-slate-700/70 rounded-md px-3.5 py-2.5 text-sm text-white focus:outline-none focus:border-blue-500"
+            />
+          </div>
+
+
+          <div>
+            <label className="block text-xs text-slate-300 mb-1.5">
+              Email
+            </label>
+
+            <input
+              type="email"
+              value={editUser.email || ""}
+              onChange={(e) =>
+                setEditUser({
+                  ...editUser,
+                  email: e.target.value,
+                })
+              }
+              required
+              className="w-full bg-[#131930] border border-slate-700/70 rounded-md px-3.5 py-2.5 text-sm text-white focus:outline-none focus:border-blue-500"
+            />
+          </div>
+
+        </div>
+
+
+        {/* Contact + Country */}
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+
+          <div>
+            <label className="block text-xs text-slate-300 mb-1.5">
+              Contact
+            </label>
+
+            <input
+              type="text"
+              value={editUser.contact || ""}
+              onChange={(e) =>
+                setEditUser({
+                  ...editUser,
+                  contact: e.target.value,
+                })
+              }
+              className="w-full bg-[#131930] border border-slate-700/70 rounded-md px-3.5 py-2.5 text-sm text-white focus:outline-none focus:border-blue-500"
+            />
+          </div>
+
+
+          <div>
+            <label className="block text-xs text-slate-300 mb-1.5">
+              Country
+            </label>
+
+            <input
+              type="text"
+              value={editUser.country || ""}
+              onChange={(e) =>
+                setEditUser({
+                  ...editUser,
+                  country: e.target.value,
+                })
+              }
+              className="w-full bg-[#131930] border border-slate-700/70 rounded-md px-3.5 py-2.5 text-sm text-white focus:outline-none focus:border-blue-500"
+            />
+          </div>
+
+        </div>
+
+
+        {/* City + Pin Code */}
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+
+          <div>
+            <label className="block text-xs text-slate-300 mb-1.5">
+              City
+            </label>
+
+            <input
+              type="text"
+              value={editUser.city || ""}
+              onChange={(e) =>
+                setEditUser({
+                  ...editUser,
+                  city: e.target.value,
+                })
+              }
+              className="w-full bg-[#131930] border border-slate-700/70 rounded-md px-3.5 py-2.5 text-sm text-white focus:outline-none focus:border-blue-500"
+            />
+          </div>
+
+
+          <div>
+            <label className="block text-xs text-slate-300 mb-1.5">
+              Pin Code
+            </label>
+
+            <input
+              type="text"
+              value={editUser.pinCode || ""}
+              onChange={(e) =>
+                setEditUser({
+                  ...editUser,
+                  pinCode: e.target.value,
+                })
+              }
+              className="w-full bg-[#131930] border border-slate-700/70 rounded-md px-3.5 py-2.5 text-sm text-white focus:outline-none focus:border-blue-500"
+            />
+          </div>
+
+        </div>
+
+
+        {/* Address */}
+        <div>
+
+          <label className="block text-xs text-slate-300 mb-1.5">
+            Address
+          </label>
+
+          <input
+            type="text"
+            value={editUser.address || ""}
+            onChange={(e) =>
+              setEditUser({
+                ...editUser,
+                address: e.target.value,
+              })
+            }
+            className="w-full bg-[#131930] border border-slate-700/70 rounded-md px-3.5 py-2.5 text-sm text-white focus:outline-none focus:border-blue-500"
+          />
+
+        </div>
+
+
+        {/* Notes */}
+        <div>
+
+          <label className="block text-xs text-slate-300 mb-1.5">
+            Notes
+          </label>
+
+          <textarea
+            rows="3"
+            value={editUser.notes || ""}
+            onChange={(e) =>
+              setEditUser({
+                ...editUser,
+                notes: e.target.value,
+              })
+            }
+            className="w-full bg-[#131930] border border-slate-700/70 rounded-md p-3 text-sm text-white focus:outline-none focus:border-blue-500 resize-none"
+          />
+
+        </div>
+
+
+        {/* Buttons */}
+        <div className="flex justify-end gap-3 pt-4 border-t border-slate-800">
+
+          <button
+            type="button"
+            onClick={() => {
+              setShowEditModal(false);
+              setEditUser(null);
+            }}
+            className="text-red-400 hover:text-red-300 text-sm px-4 py-2"
+          >
+            Cancel
+          </button>
+
+          <button
+            type="submit"
+            className="bg-[#2a365c] hover:bg-[#344475] text-white text-sm font-medium px-5 py-2 rounded-md"
+          >
+            Update User
+          </button>
+
+        </div>
+
+      </form>
+
+    </div>
+
+  </div>
+
+)}
     </div>
   );
 };
