@@ -95,7 +95,7 @@ const ViewProduct = ({ isCollapsed }) => {
 
         try {
             const response = await fetch(
-                `http://localhost:4000/form/product/${id}`,
+                `https://smit-ecommerce-website-backend.vercel.app/form/product/${id}`,
                 {
                     method: "DELETE",
                 }
@@ -124,7 +124,7 @@ const ViewProduct = ({ isCollapsed }) => {
 
   try {
     const response = await fetch(
-      `http://localhost:4000/form/product/${editProduct._id}`,
+      `https://smit-ecommerce-website-backend.vercel.app/product/${editProduct._id}`,
       {
         method: "PUT",
         headers: {

@@ -16,7 +16,7 @@ const UserList = ({ isCollapsed }) => {
   useEffect(() => {
     const fetchUsers = async () => {
       try {
-        const response = await fetch("http://localhost:4000/form/users");
+        const response = await fetch("https://smit-ecommerce-website-backend.vercel.app/form/users");
 
         const data = await response.json();
 
@@ -70,7 +70,7 @@ const UserList = ({ isCollapsed }) => {
 
   try {
     const response = await fetch(
-      `http://localhost:4000/form/users/${id}`,
+      `https://smit-ecommerce-website-backend.vercel.app/form/users/${id}`,
       {
         method: "DELETE",
       }
@@ -448,7 +448,7 @@ const UserList = ({ isCollapsed }) => {
           try {
 
             const response = await fetch(
-              `http://localhost:4000/form/users/${editUser._id}`,
+              `https://smit-ecommerce-website-backend.vercel.app/form/users/${editUser._id}`,
               {
                 method: "PUT",
                 headers: {
