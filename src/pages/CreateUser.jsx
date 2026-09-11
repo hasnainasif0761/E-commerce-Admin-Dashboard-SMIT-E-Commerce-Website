@@ -44,7 +44,7 @@ function CreateUser({isCollapsed}) {
     data.append("image", formData.image);
   }
 
-  const response = await fetch("http://localhost:4000/form/create-user", {
+  const response = await fetch("https://smit-ecommerce-website-backend.vercel.app/form/create-user", {
     method: "POST",
     body: data,
   });

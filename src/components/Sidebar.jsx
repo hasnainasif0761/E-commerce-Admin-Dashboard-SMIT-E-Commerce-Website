@@ -8,9 +8,10 @@ import {
   PieChart, 
   ClipboardList, 
   User,
+  ShoppingCartPlus,
+  ShoppingBasket
 } from 'lucide-react';
 import { Link } from 'react-router-dom';
-
 const Sidebar = ({ isCollapsed, activeTab, setActiveTab }) => {
   const menuSections = [
   {
@@ -19,8 +20,8 @@ const Sidebar = ({ isCollapsed, activeTab, setActiveTab }) => {
       { id: 'default', label: 'Dashboard', icon: Gauge, path: '/' },
       { id: 'analytics', label: 'Create User', icon: User, path: '/CreateUser' },
       { id: 'invoice', label: 'View Employee', icon: FileText, path: '/viewUser' },
-      { id: 'crm', label: 'CRM', icon: LifeBuoy, path: '/crm' },
-      { id: 'blog', label: 'Blog', icon: Newspaper, path: '/blog' },
+      { id: 'crm', label: 'Create Product', icon: ShoppingCartPlus, path: '/createProduct' },
+      { id: 'blog', label: 'View Product', icon: ShoppingBasket, path: '/viewProduct' },
     ]
   },
   {

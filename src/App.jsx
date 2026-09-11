@@ -6,6 +6,8 @@ import Sidebar from './components/Sidebar'
 import CreateUser from './pages/CreateUser';
 import UserList from './pages/UserList';
 import { Toaster } from 'react-hot-toast';
+import CreateProduct from './pages/CreateProduct';
+import ViewProduct from './pages/ViewProduct';
 
 
 function App() {
@@ -28,7 +30,9 @@ function App() {
       <Routes>
         <Route path="/" element={<DashboardSection isCollapsed={isCollapsed} />} />
         <Route path='/CreateUser' element={<CreateUser isCollapsed={isCollapsed}  />} />
-        <Route path='/viewUser' element={<UserList isCollapsed={isCollapsed}/>} />
+        <Route path='/viewUser' element={<UserList isCollapsed={isCollapsed}  />} />
+        <Route path='/createProduct' element={<CreateProduct isCollapsed={isCollapsed}/>} />
+        <Route path='/viewProduct' element={<ViewProduct isCollapsed={isCollapsed}/>} />
       </Routes>        
       </div>
      </BrowserRouter>
